@@ -1,2 +1,1 @@
-# t2
-how to use this 
+Test saving good leetcode solutions here. 
