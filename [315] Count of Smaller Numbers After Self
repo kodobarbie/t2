@@ -1,0 +1,50 @@
+// C++ Binary search based solution
+
+class Solution {
+public:
+    int findInd(const vector<int> t, int target)
+    {
+        if(t.empty())
+            return 0;
+        int start = 0;
+        int end = t.size()-1;
+        if(target>t[end])
+        {
+            return (end+1);
+        }else if(target<=t[start])
+        {
+            return 0;
+        }
+        
+        while(start<end)
+        {
+            int mid = start + (end-start)/2;
+            if(t[mid]<target)
+            {
+                start = mid+1;
+            }else //t[mid]>=target
+            {
+                end = mid;
+            }
+        }
+        return end;
+    }
+    vector<int> countSmaller(vector<int>& nums) 
+    {
+        vector<int> res;
+        if(nums.empty())
+        {
+            return res;
+        }
+        int n = nums.size();
+        res.resize(n);
+        vector<int> t;
+        for(int i=n-1; i>=0; i--)
+        {
+            int ind = findInd(t, nums[i]);
+            res[i] = ind;
+            t.insert(t.begin()+ind, nums[i]);
+        }
+        return res;
+    }
+};
