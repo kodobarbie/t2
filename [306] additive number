@@ -1,0 +1,42 @@
+class Solution {
+public:
+    bool isSuccess(string str, long a, long b)
+    {
+        if(str=="")
+            return true;
+        long c = a + b;
+        string C = to_string(c);
+        int n = C.size();
+        if(str.substr(0,n) != C)
+        {
+            return false;
+        }else
+        {
+            return isSuccess(str.substr(n), b, c);
+        }
+    }
+    bool isAdditiveNumber(string num) 
+    {
+        if(num.empty()||num.size()<3)
+            return false;
+        int n = num.size();
+        for(int i=1; i<=(n-1)/2; i++)
+        {
+            string A = num.substr(0, i);
+            if(A[0]=='0' && A.size()>1)
+                break;
+            for(int j=1; i<=(n-i-j)&&j<=(n-i-j); j++)
+            {
+                string B = num.substr(i, j);
+                if(B[0]=='0' && B.size()>1)
+                    break;
+                long a = stol(A);
+                long b = stol(B);
+                string rest = num.substr(i+j);
+                if(isSuccess(rest, a, b))
+                    return true;
+            }
+        }
+        return false;
+    }
+};
