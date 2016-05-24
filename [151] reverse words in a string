@@ -1,0 +1,90 @@
+c++
+
+// method 1 using two pointers 
+class Solution {
+public:
+    void reverseWords(string &s) {
+    
+    string res = "";
+    for (int i=0; i< s.length(); i++)
+    {
+        if(s[i] == ' ')
+        continue;
+        
+        int pos = i;
+        while(i< s.length() && s[i]!= ' ')
+        i++;
+        
+        if(res.length()> 0)
+        res = ' '+ res;
+        
+        res = s.substr(pos, i-pos)+res;
+    }
+    
+    s= res;
+    }
+};
+// Method 2 using stringstream
+class Solution {
+public:
+    void reverseWords(string &s) 
+    {
+        if(s.empty())
+        return;
+        stringstream ss(s);
+        string res, temp;
+        vector<string> st;
+        while(getline(ss, temp, ' '))
+        {
+            if(temp=="")
+            continue;
+            st.push_back(temp);
+        }
+        
+         while(!st.empty())
+        {
+            string temp = st.back();
+            res += temp;
+            st.pop_back();
+            if(!st.empty())
+                res +=" ";
+        }
+        s = res;
+        return;
+    }
+};
+// Method 3  in place method (Best)
+class Solution {
+public:
+
+    // function to reverse any part of string from i to j (just one word or entire string)
+    void reverseword(string &s, int i, int j){
+        while(i<j){
+          char t=s[i];
+          s[i++]=s[j];
+          s[j--]=t;
+        } 
+    }
+
+    void reverseWords(string &s) {
+
+        int i=0, j=0;
+        int l=0;
+        int len=s.length();
+        int wordcount=0;
+
+        while(true){
+            while(i<len && s[i] == ' ') i++;  // skip spaces in front of the word
+            if(i==len) break;
+            if(wordcount) s[j++]=' ';
+            l=j;
+            while(i<len && s[i] != ' ') {s[j]=s[i]; j++; i++;} 
+            reverseword(s,l,j-1);                // reverse word in place
+            wordcount++;
+
+        }
+
+        s.resize(j);                           // resize result string
+        reverseword(s,0,j-1);                  // reverse whole string
+    }
+};
