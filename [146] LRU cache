@@ -1,0 +1,193 @@
+1. C++ use double linkedlist and hashmap
+struct DNode{
+    int key;
+    int val;
+    DNode* prev;
+    DNode* next;
+    DNode(int key, int val)
+    {
+        this->key = key;
+        this->val = val;
+        prev = NULL;
+        next = NULL;
+    }
+};
+
+
+class LRUCache{
+private:
+    unordered_map<int, DNode*> mp;
+    DNode* head;
+    DNode* tail;
+    int count;
+    int capacity;
+public:
+    LRUCache(int capacity) 
+    {
+        this->capacity = capacity;
+        count = 0;
+        head = new DNode(-1, -1);
+        tail = new DNode(-1, -1);
+        head->next = tail;
+        tail->prev = head;
+    }
+    
+    ~LRUCache()
+    {
+        delete head;
+        delete tail;
+    }
+    
+    void removeNode(DNode* node)
+    {
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+    }
+    
+    void moveToHead(DNode* node)
+    {
+        DNode* tmp = head->next;
+        head->next = node;
+        node->prev = head;
+        node->next = tmp;
+        tmp->prev = node;
+    }
+    
+    void popBack()
+    {
+        DNode* tmp = tail->prev;
+        int key = tmp->key;
+        tmp->prev->next = tail;
+        tail->prev = tmp->prev;
+        mp.erase(key);
+        delete tmp;
+    }
+    
+    int get(int key) 
+    {
+        if(mp.count(key))
+        {
+            DNode* tmp = mp[key];
+            removeNode(tmp);
+            moveToHead(tmp);
+            return tmp->val;
+        }else
+        {
+            return -1;
+        }
+    }
+    
+    void set(int key, int value) 
+    {
+        if(mp.count(key))
+        {
+            DNode* tmp = mp[key];
+            tmp->val = value;
+            removeNode(tmp);
+            moveToHead(tmp);
+        }else
+        {
+            DNode* tmp = new DNode(key, value);
+            moveToHead(tmp);
+            mp[key] = tmp;
+            count++;
+            if(count>capacity)
+            {
+                popBack();
+            }
+        }
+    }
+};
+
+2. Java use double linkedlist and hashmap
+public class LRUCache 
+{
+    class ListNode{
+        ListNode next;
+        ListNode prev;
+        int key;
+        int val;
+    public ListNode(int key, int val)
+        {
+            this.key = key;
+            this.val = val;
+        }
+    }
+    
+    private int size;
+    private int capacity;
+    private HashMap<Integer, ListNode> mp;
+    ListNode head;
+    ListNode tail;
+    
+    public LRUCache(int capacity) 
+    {
+        this.capacity = capacity;
+        this.size = 0;
+        mp = new HashMap<Integer, ListNode>();
+        head = new ListNode(-1, -1);
+        tail = new ListNode(-1, -1);
+        head.next = tail;
+        head.prev = null;
+        tail.prev = head;
+        tail.next = null;
+    }
+    
+    private void removeNode(ListNode node)
+    {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+    
+    private void moveToHead(ListNode node)
+    {
+        ListNode tmp = head.next;
+        head.next = node;
+        node.prev = head;
+        node.next = tmp;
+        tmp.prev = node;
+    }
+    
+    private void popBack()
+    {
+        ListNode tmp = tail.prev;
+        tmp.prev.next = tail;
+        tail.prev = tmp.prev;
+        mp.remove(tmp.key);
+    }
+    
+    public int get(int key) 
+    {
+        ListNode tmp = mp.get(key);
+        if(tmp!=null)
+        {
+            removeNode(tmp);
+            moveToHead(tmp);
+            return tmp.val;
+        }else
+        {
+            return -1;
+        }
+    }
+    
+    public void set(int key, int value) 
+    {
+        if(mp.containsKey(key))
+        {
+            ListNode tmp = mp.get(key);
+            tmp.val = value;
+            removeNode(tmp);
+            moveToHead(tmp);
+        }else
+        {
+            ListNode tmp = new ListNode(key, value);
+            moveToHead(tmp);
+            mp.put(key, tmp);
+            size++;
+            if(size>capacity)
+            {
+                popBack();
+            }
+        }
+    }
+}
